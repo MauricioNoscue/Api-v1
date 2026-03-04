@@ -59,6 +59,11 @@ export class MortyCard extends LitElement {
       font-weight: 600;
     }
 
+    .status-text {
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
     .dot {
       width: 10px;
       height: 10px;
@@ -89,6 +94,11 @@ export class MortyCard extends LitElement {
       margin: 0;
       font-size: 1.8rem;
       line-height: 1.2;
+    }
+
+    .value-small {
+      font-size: 1.35rem;
+      line-height: 1.3;
     }
 
     @media (max-width: 768px) {
@@ -134,14 +144,14 @@ export class MortyCard extends LitElement {
 
           <div class="status-row">
             <span class="dot ${this.statusClass}"></span>
-            <span>${this.item?.status || "Unknown"} - ${this.item?.species || "Unknown"}</span>
+            <span class="status-text">${this.item?.status || "Unknown"} - ${this.item?.species || "Unknown"}</span>
           </div>
 
           <p class="label">Last known location:</p>
-          <p class="value">${this.item?.lastKnownLocation || "unknown"}</p>
+          <p class="value value-small">${this.item?.lastKnownLocation || "unknown"}</p>
 
           <p class="label">First seen in:</p>
-          <p class="value">${this.item?.firstSeenIn || "unknown"}</p>
+          <p class="value value-small">${this.item?.firstSeenIn || "unknown"}</p>
         </div>
       </article>
     `;

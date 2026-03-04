@@ -1,4 +1,5 @@
 export class DataManager extends EventTarget {
+  
   constructor(providerAll, providerByName) {
     super();
     this.providerAll = providerAll;
