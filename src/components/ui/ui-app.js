@@ -60,6 +60,10 @@ export class UiApp extends LitElement {
     );
   }
 
+  /**
+   * Define que el componente renderiza en light DOM
+   * para reutilizar estilos globales de la app.
+   */
   createRenderRoot() {
     return this;
   }
@@ -69,6 +73,10 @@ export class UiApp extends LitElement {
    */
   async connectedCallback() {
     super.connectedCallback();
+
+    this.initialLoadingTimeout = setTimeout(() => {
+      this.initialLoading = false;
+    }, 2000);
 
     this.manager.addEventListener("search-start", () => {
       this.loading = true;
@@ -90,43 +98,32 @@ export class UiApp extends LitElement {
       this.notificationType = "danger";
       this.notificationMessage = this.error;
     });
+  }
 
-    this.addEventListener("on-input-change", (e) => {
-      this.inputValue = e.detail;
-    });
-
-    this.addEventListener("on-search-click", () => {
-      this.manager.getByName(this.inputValue);
-    });
-
-    this.addEventListener("on-show-all-click", () => {
-      this.manager.getAllCharacters();
-    });
-
-    await this.loadInitialWithSpinner();
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this.initialLoadingTimeout);
   }
 
   /**
-   * Ejecuta la carga inicial con un tiempo mínimo visible de spinner.
+   * Ejecuta la búsqueda por nombre usando el valor actual del input.
    */
-  async loadInitialWithSpinner() {
-    const minTime = 1200;
-    const start = Date.now();
+  handleSearch() {
+    this.manager.getByName(this.inputValue);
+  }
 
-    await this.manager.getAllCharacters();
+  /**
+   * Solicita al manager la carga del listado completo de personajes.
+   */
+  handleShowAll() {
+    this.manager.getAllCharacters();
+  }
 
-    const remaining = minTime - (Date.now() - start);
-
-    if (remaining > 0) {
-      await new Promise((resolve) => {
-        const timer = setInterval(() => {
-          clearInterval(timer);
-          resolve();
-        }, remaining);
-      });
-    }
-
-    this.initialLoading = false;
+  /**
+   * Actualiza el estado local del input con el valor emitido por `ui-input`.
+   */
+  handleInputChange(e) {
+    this.inputValue = e.detail;
   }
 
   /**
@@ -134,7 +131,16 @@ export class UiApp extends LitElement {
    * - Compone header, barra de acciones, estados de feedback, lista y footer.
    */
   render() {
-    const showLoading = this.loading || this.initialLoading;
+    return html` ${this.renderContent} `;
+  }
+
+  /**
+   * Decide qué vista mostrar según el estado inicial de carga.
+   */
+  get renderContent() {
+    if (this.initialLoading) {
+      return this.renderInitialLoading;
+    }
 
     return html`
       <div class="main-api p-4">
@@ -144,21 +150,10 @@ export class UiApp extends LitElement {
           <ui-notification
             .message=${this.notificationMessage}
             .type=${this.notificationType}
-          ></ui-notification>
+          >
+          </ui-notification>
 
-          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <ui-input></ui-input>
-
-            <ui-button .label=${"Buscar"} .type=${"search"}></ui-button>
-
-            <ui-button .label=${"Mostrar todos"} .type=${"all"}></ui-button>
-
-            ${showLoading ? html`<ui-loading></ui-loading>` : html``}
-          </div>
-
-          ${this.error
-            ? html`<ui-error .message=${this.error}></ui-error>`
-            : html``}
+          ${this.renderToolbar} ${this.renderError}
 
           <ui-list .items=${this.characters}></ui-list>
 
@@ -166,6 +161,48 @@ export class UiApp extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  get renderToolbar() {
+    return html`
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <ui-input @on-input-change=${this.handleInputChange}> </ui-input>
+
+        <ui-button
+          .label=${"Buscar"}
+          .type=${"search"}
+          @on-search-click=${this.handleSearch}
+        >
+        </ui-button>
+
+        <ui-button
+          .label=${"Mostrar todos"}
+          .type=${"all"}
+          @on-show-all-click=${this.handleShowAll}
+        >
+        </ui-button>
+
+        ${this.loading ? html`<ui-loading></ui-loading>` : null}
+      </div>
+    `;
+  }
+
+  /**
+   * Renderiza el bloque de error solo cuando existe mensaje.
+   */
+  get renderError() {
+    if (!this.error) return null;
+
+    return html` <ui-error .message=${this.error}></ui-error> `;
+  }
+
+  /**
+   * Renderiza el estado de carga inicial a pantalla completa.
+   */
+  get renderInitialLoading() {
+    if (!this.initialLoading) return null;
+
+    return html`<ui-loading .fullscreen=${true}></ui-loading>`;
   }
 }
 

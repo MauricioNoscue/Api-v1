@@ -5,28 +5,43 @@ import { html, LitElement } from "lit";
  *
  * Sección de responsabilidad
  * - Presenta un spinner cuando la aplicación está en proceso.
+ * - Puede renderizarse en modo normal o pantalla completa.
  *
  * Sección de eventos
  * - No emite ni escucha eventos.
  *
  * Sección de render
- * - Renderiza un spinner Bootstrap con etiqueta accesible.
+ * - Renderiza un spinner con etiqueta accesible.
  */
-export class UiLoading extends LitElement{
-   
-    
-    createRenderRoot() { return this; }
+export class UiLoading extends LitElement {
+  static properties = {
+    fullscreen: { type: Boolean },
+  };
+
+  constructor() {
+    super();
+    this.fullscreen = false;
+  }
+
+  createRenderRoot() {
+    return this;
+  }
 
     /**
      * Renderiza el indicador de carga.
      */
-    render(){
-        return html`
-      <div class="spinner-border text-light" role="status" aria-label="loading">
-        <span class="visually-hidden">Loading...</span>
-     </div>
-        `;
-    }
+  render() {
+    const className = this.fullscreen
+      ? "app-loading app-loading--fullscreen"
+      : "app-loading";
+
+    return html`
+      <div class=${className} role="status" aria-live="polite" aria-label="loading">
+        <span class="app-loading__spinner" aria-hidden="true"></span>
+        <span>Cargando...</span>
+      </div>
+    `;
+  }
 }
 
-customElements.define('ui-loading',UiLoading)
+customElements.define("ui-loading", UiLoading);

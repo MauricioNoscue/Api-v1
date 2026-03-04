@@ -18,6 +18,41 @@ ui-header {
   display: block;
   margin-bottom: 1rem;
 }
+
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.app-loading--fullscreen {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #272b33;
+}
+
+ui-loading {
+  display: block;
+}
+
+.app-loading__spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: app-spin 0.7s linear infinite;
+}
+
+@keyframes app-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

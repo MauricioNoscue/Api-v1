@@ -1,0 +1,11 @@
+html,
+body {
+  margin: 0;
+  background-color: #272b33;
+  color: #fff;
+}
+
+ui-app {
+  display: block;
+  min-height: 100vh;
+}

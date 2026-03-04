@@ -42,7 +42,7 @@ export class UiHeader extends LitElement {
   
   constructor() {
     super();
-    this.title = "The Rick and Morty API";
+    this.title = "Hola bienvenido a tu buscador de personajes de Rick and Morty";
   }
 
   /**
