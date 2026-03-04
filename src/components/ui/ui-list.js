@@ -25,13 +25,19 @@ export class UiList extends LitElement {
     .list-wrap {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 280px;
       gap: 16px;
       margin-top: 16px;
+    }
+
+    morty-card {
+      height: 100%;
     }
 
     @media (max-width: 992px) {
       .list-wrap {
         grid-template-columns: 1fr;
+        grid-auto-rows: auto;
       }
     }
   `;

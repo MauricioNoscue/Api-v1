@@ -29,7 +29,7 @@ export class MortyCard extends LitElement {
       border-radius: 12px;
       overflow: hidden;
       color: #f5f5f5;
-      min-height: 220px;
+      height: 280px;
     }
 
     .img {
@@ -41,13 +41,21 @@ export class MortyCard extends LitElement {
 
     .body {
       padding: 16px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .title {
       margin: 0;
-      font-size: 2rem;
+      font-size: clamp(1.4rem, 1rem + 1.1vw, 2rem);
       line-height: 1.1;
       font-weight: 700;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .status-row {
@@ -62,6 +70,10 @@ export class MortyCard extends LitElement {
     .status-text {
       font-size: 1rem;
       line-height: 1.2;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .dot {
@@ -99,11 +111,15 @@ export class MortyCard extends LitElement {
     .value-small {
       font-size: 1.35rem;
       line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     @media (max-width: 768px) {
       .card-wrap {
         grid-template-columns: 1fr;
+        height: auto;
       }
 
       .title {
@@ -135,12 +151,14 @@ export class MortyCard extends LitElement {
    * Renderiza la tarjeta de personaje.
    */
   render() {
+    const name = this.item?.name || "Unknown";
+
     return html`
       <article class="card-wrap">
         <img class="img" src=${this.item?.image || ""} alt=${this.item?.name || "character"} />
 
         <div class="body">
-          <h3 class="title">${this.item?.name || "Unknown"}</h3>
+          <h3 class="title">${name}</h3>
 
           <div class="status-row">
             <span class="dot ${this.statusClass}"></span>
